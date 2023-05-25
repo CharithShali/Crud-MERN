@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React,{useState} from 'react'
+import List from './Components/List';
+import { baseURL } from './utils/Constant';
+import { useEffect } from 'react';
+import axios from "axios"
 
-function App() {
+const App = () => {
+
+
+
+  const [input, setInput] = useState("");
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    axios.get(`${baseURL}/get`).then((res) => {
+      console.log(res.data);
+      setTasks(res.data);
+    });
+  }, []);
+
+  const addTask = () => {
+    axios.post(`${baseURL}/add`, { task: input }).then((res) => {
+      console.log(res.data);
+      setInput("");
+    });
+  };
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <main>
+   <h1 className='title'>CRUD Operations</h1>
 
+   <div className="input_holder">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button type="submit" onClick={addTask
+        }>
+          Add Task
+        </button>
+      </div>
+<ul>
+  <List/>
+</ul>
+
+   </main>
+  )
+}
 export default App;
